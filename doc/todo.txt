@@ -1,0 +1,29 @@
+=========title===================
+time
+contents
+
+
+
+==========[ Output local status per second ]=============
+18:22 2011/12/26
+  - socket:
+    * send list size
+    * recv list size
+    * send packets per second
+    * resend packets per second
+    * recv packets per second
+    * min response time
+    * max response time
+  - manager:
+    * process peer's DHT search request count per second
+    * DHT search success/failed count per second
+    * send login file count per second
+    * recv login file count per second
+    * send DHT search request count count per second
+    * recv DHT search respones count count per second
+  - DHT:
+    * file count
+  - FileNotify
+    * file list size
+  - peerlist:
+    * peer size

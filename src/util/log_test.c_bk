@@ -1,0 +1,28 @@
+
+#include <stdio.h>
+#include <string.h>
+
+#include "log_agent_const.h"
+#include "log_agent.h"
+
+int32 main()
+{
+	LOG_AGENT agent;
+
+	//printf("/data0/wengy/test/\n");
+
+	log_agent_setup(&agent);
+	log_agent_init(&agent);
+
+	log_agent_set_log_level(&agent, LA_LOG_LEVEL_DEBUG | LA_LOG_LEVEL_ERROR);
+	log_agent_set_log_type(&agent, LA_LOG_TYPE_STDOUT | LA_LOG_TYPE_FILE);
+	log_agent_set_log_file_dir(&agent, "/data0/wengy/test/", strlen("/data0/wengy/test/"));
+
+	log_agent_trace(&agent, LA_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "This is a log agent test!\n");
+	log_agent_debug(&agent, __FILE__, __LINE__, "This is a log agent test 2!\n");
+	log_agent_info(&agent, __FILE__, __LINE__, "This is a log agent test 3!\n");
+
+	log_agent_cleanup(&agent);
+
+	return 0;
+}

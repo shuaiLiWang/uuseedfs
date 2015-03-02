@@ -1,0 +1,43 @@
+文件系统hash值原则：
+    url要和本地硬盘数据能够统一到一个hash空间。
+    具体方法：
+	1.url和本地在转换hash之前须去除扩展名。
+	2.所有字符大写。
+	3.hash字符串为urlencode编码。'[' '{' '}'
+
+[live]
+client-cdn:
+	http://111.177.117.10/%5B/1/video/F5/FE/%7BF5FECCBE-0000-0000-FFFF-FFFFFFFFFF14%7D_1324539652.unp
+local-disk:
+	/xxx/F5/FE/%7BF5FECCBE-0000-0000-FFFF-FFFFFFFFFF14%7D_1324539652.unp
+	/xxx/F5/FE/%7BF5FECCBE-0000-0000-FFFF-FFFFFFFFFF14%7D_1324539600.und
+直播请求特点：
+	- guid中第2和第3段为全0
+	- 结尾为unp
+hash策略:
+	cdn:
+	  将url中unp文件转换成und方式。
+	  http://111.177.117.10/%5B/1/video/F5/FE/%7BF5FECCBE-0000-0000-FFFF-FFFFFFFFFF14%7D_1324539652.unp
+	  （%7BF5FECCBE-0000-0000-FFFF-FFFFFFFFFF14%7D_1324539600)
+	local-disk:
+	  /xxx/F5/FE/%7BF5FECCBE-0000-0000-FFFF-FFFFFFFFFF14%7D_1324539652.unp
+	  hash(%7BF5FECCBE-0000-0000-FFFF-FFFFFFFFFF14%7D_1324539600)
+	  /xxx/F5/FE/%7BF5FECCBE-0000-0000-FFFF-FFFFFFFFFF14%7D_1324539600.und	
+	  hash(%7BF5FECCBE-0000-0000-FFFF-FFFFFFFFFF14%7D_1324539600)
+
+[vod]
+client-cdn:
+	http://61.55.142.21/[/1/video/B1/01/%7BB1018752-42E6-064D-6BCD-4F50FFFDFF3D%7D_1.unt
+local-disk:
+	/xxx/B1/01/%7BB1018752-42E6-064D-6BCD-4F50FFFDFF3D%7D.mp4
+vod请求特点：
+	- 结尾为unt
+hash策略:
+	cdn:
+	  将url中unt文件转换成mp4方式。
+	  http://61.55.142.21/[/1/video/B1/01/%7BB1018752-42E6-064D-6BCD-4F50FFFDFF3D%7D_1.unt
+	  hash(%7BB1018752-42E6-064D-6BCD-4F50FFFDFF3D%7D)
+	local-disk:
+	  /xxx/B1/01/%7BB1018752-42E6-064D-6BCD-4F50FFFDFF3D%7D.mp4
+	  hash(%7BB1018752-42E6-064D-6BCD-4F50FFFDFF3D%7D)
+	  

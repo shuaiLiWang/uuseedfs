@@ -1,0 +1,2 @@
+设定inotify的最大监听句柄数
+echo 104857600 > /proc/sys/fs/inotify/max_user_watches

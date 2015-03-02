@@ -1,0 +1,9 @@
+peer超时时间：                   3600s           peerlist.cpp:7
+peer发送ping消息的周期：        60s		 dfsmanager.cpp:12
+文件扫描周期：                    从配置文件读取：默认为172800s（2天）
+udp发包最大数：                  15000/s       udpsocket.cpp:317
+udp收包最大数：                   20000/s	udpsocket.cpp:12
+资源备份数量：                     3		dfsmanager.cpp:9
+文件超时设置：                     4.5天	dhtdataset.cpp:8
+文件最大扫描个数：                1000/s        filenotify.cpp:1000
+最大发布文件个数：                2000/s 	dfsmanager.cpp:369

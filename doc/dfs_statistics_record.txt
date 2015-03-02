@@ -1,0 +1,11 @@
+peer count： 	12
+文件数：      	34万
+内存： 		750MB
+
+文件备份数： 	size:1    96643
+		size:2    272066
+		size:3    21216
+		size:4    3326
+		size:5    413
+		size:6    2
+		size:7    0

@@ -1,0 +1,86 @@
+一、dfs日志格式+++++++++++++++++++++++++++++++++++++++++++++++++++++
+字段描述：
+	R:资源
+	F:文件信息  N:文件名   I:文件ID
+	D:存储信息  I:文件ID  	RA:文件源IP 	SA:保存该文件信息的机器的IP
+例子:
+	R:F N:/[/1/video/01/2D/{012D4A16-B42B-27F2-D9DB-FDBCFFFDFF3D}_1344996100.unp I:{D62147A7-342A468A-BB73BB0F-7D68CF55} SA1:61.174.18.186 SA2:61.174.18.186 SA3:61.174.18.186 
+	R:D I:{D62147A7-342A468A-BB73BB0F-7D68CF55} 	RA:61.174.18.186
+
+状态信息格式：
+++++++++++++++++++++++++++
+inotifyListNum:		每秒扫描文件数
+insertSendListNum:	每秒插入udp队列数
+RetryTimes:		重发次数
+ActualSendReqNum:	实际发生的请求数
+RecvReqAckNum:4 	收到的对于请求的ack数
+RecvRspNum:4 		实际收到的udp请求数
+SendRspAckNum:4 	对于收到的udp请求，实际发送的ack的数
+SendFaied:0 		有多少个请求没有发送成功
+sendListTaskNum:4     	发送队列长度
+FastTime:0 		最快发送时间
+SlowTime:0        	最慢发送时间
+RecvListNum:0    	接收队列长度
+peer size is 4 		dfs系统中peer的个数
+size is 960000          dht列表长度
+例子：
+++++++++++++++++++++++++++
+(CFileNotify::GetStatues) inotifyListNum:0 	
+(CUdpSocket::GetStatues) insertSendListNum:4 RetryTimes:0 ActualSendReqNum:4 RecvReqAckNum:4 RecvRspNum:4 SendRspAckNum:4 SendFaied:0 
+sendListTaskNum:4 FastTime:0 SlowTime:0 RecvListNum:0
+CPeerList::GetStatus peer size is 4.
+CDhtDataSet::GetStatus dht size is 960000
+++++++++++++++++++++++++++
+
+统计节点信息格式：
+id:文件的id name:文件名
+filemap.log id:{628D8F32-767A3B3C-72114049-99C3CADC} name:01/96/{01964A16-B42B-27F2-D9DB-FDBCFFFDFF3D}_1345059600.unp
+文件ID;{size:机器个数:机器ID_IP_PORT;机器ID_IP_PORT;}
+机器ID_IP_PORT;{文件ID;文件ID}
+indexbyfile.log {00AC5174-4C3638BD-7585A4F9-ED696FF6};{size:1:{E6F43E7E-FB79B196-857FCFC2-AABFB5DD}_10.1.102.162_8970;}
+indexbypeer.log	{8B85B50D-F902A419-41622FE7-9AF9BF64}_10.1.102.161_8970;{{000007C3-96BF29B7-506505EB-FB2991F8};{00002F14-2C555CD7-70A3FA14-127548BD};}
+
+二、mongoose日志格式：++++++++++++++++++++++++++++++++++++++++++++++
+字段描述：
+	S:status  取值( S:successed F:failed C:counts/second W:warning)
+	A:address(ip)
+	L:length
+	DT:download time
+	FT:find in dfs time
+	R:reason
+	T:total request
+	N:not found request
+	B:failed request
+	O:ok request
+	K:CRC错误的
+例子:
+S:S A:61.174.18.186 L:358706 DT:203 FT:20   		//成功下载的请求
+S:F R:unfound 						//dfs系统中没有的请求
+S:F R:failed A:61.174.18.186			//从源下载失败的请求
+S:W R:timeout A:61.174.18.186 DT:2000 FT:20	//从源下载超时的请求
+S:C T:1000 O:800 B:100 N:100 K:100			//简单的统计输出每秒成功，失败，NotFound及总的请求数
+
+三、日志分析工具++++++++++++++++++++++++++
+shell 脚本
+
+四、日志分析工具输出++++++++++++++++++++++++++
+平均统计(每秒mongoose的统计信息)：
+	Type:Persecond Total:1000 Successed:800 Failed:100 NotFound:50 CRCWrong:10
+总的统计：
+	Type:All Total:1000 Successed:800 Failed:100 NotFound:50 TimeOut:50 Warning:10
+
+失败请求的详细信息,放到failed.log文件中
+format:	[date] url A:peer_ip
+example:[1349924006] /[/1/video/03/85/{03854A16-B42B-27F2-D9DB-FDBCFFFDFF3D}_1345035800.unp A:10.1.102.161
+
+没有找到的请求的详细信息，放到NotFound.log文件中
+format:	[date] url
+example:[1349924006] /[/1/video/03/85/{03854A16-B42B-27F2-D9DB-FDBCFFFDFF3D}_1345035800.unp:
+
+下载时间超过一定值的请求数，放到TimeOut.log文件中
+format:	[date] url A:peer_ip DT:using_time
+example:[1349924006] /[/1/video/03/85/{03854A16-B42B-27F2-D9DB-FDBCFFFDFF3D}_1345035800.unp: A:10.1.102.161 DT:2000 
+
+下载时间超时导致下载失败的数，放到warning.log文件中
+format:	[date] url A:peer_ip DT:using_time
+example:[1349924006] /[/1/video/03/85/{03854A16-B42B-27F2-D9DB-FDBCFFFDFF3D}_1345035800.unp A:10.1.102.163 DT:3005 
